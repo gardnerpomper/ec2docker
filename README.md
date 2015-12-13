@@ -2,7 +2,7 @@
 Scripts and support files for running docker containers on EC2 instances
 
 | script   | description                                            |
-|----------+--------------------------------------------------------|
+| ------   | -------------------                                    |
 | dinit    | init script for new EC2 instance                       |
 | dtunnel  | print scp command to create tunnels for each container |
 | ec2login | first login to new EC2 instance                        |
@@ -32,3 +32,5 @@ The ```dinit`` script does most of the work on the EC2 instance. It:
 5. add ec2-user to the docker group
 6. pulls and starts gardnerpomper/minimal-xfce-xvnc
 7. displays the ssh command to tunnel to the containers on the instance (```dtunnel```)
+
+
