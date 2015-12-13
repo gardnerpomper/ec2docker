@@ -1,0 +1,17 @@
+#!/bin/bash
+read -d '' awkScript << 'EOF'
+FNR == 1 {
+    col_start=index($0,"PORTS");
+    col_end=index($0,"NAMES");
+    next;
+};
+{
+    ports=substr($0,col_start,col_end-col_start);
+    printf("ssh ec2-user@%s -N",ELASTIC_IP);
+    n = split(ports,flds,"[-\/:>]");
+    for( f=4; f < n; f += 4)
+        printf(" -L %s/localhost/%s", flds[f], flds[f-2]);
+    printf(" &\\n");
+}
+EOF
+cat t | awk -v ELASTIC_IP='$ELASTIC_IP' "$awkScript"
