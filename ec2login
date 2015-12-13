@@ -12,5 +12,7 @@
 : ${ELASTIC_IP:=52.7.116.164}
 #
 sed -i '' "/${ELASTIC_IP}/d" ~/.ssh/known_hosts
-ssh -i ~/.ssh/gcpEC2.pem ec2-user@$ELASTIC_IP
+scp dinit ec2-user@$ELASTIC_IP:dinit
+ssh ec2-user@$ELASTIC_IP -t sudo /home/ec2-user/dinit
+# ssh -i ~/.ssh/gcpEC2.pem ec2-user@$ELASTIC_IP
 

@@ -1,15 +1,20 @@
 #!/bin/bash
-sudo yum update -y 
-sudo yum install -y docker git
-sudo service docker start
-sudo usermod -G docker ec2-user
+yum update -y 
+yum install -y docker git
+service docker start
+usermod -G docker ec2-user
 #docker run -d -P -e "PASSWORD=pw" -e "USE_HTTP=1" ipython/scipyserver
-sudo docker run -dt -P gardnerpomper/minimal-xfce-xvnc-xrdp
+docker run -dt -P gardnerpomper/minimal-xfce-xvnc-xrdp
 mkdir git
 cd git
 git clone https://github.com/gardnerpomper/ec2docker
 #
-dtunnel
+./ec2docker/dtunnel
 #
-echo 'PATH=.:$HOME/git/ec2docker:$PATH' >> ~/.bash_profile
-chmod +x ~/.bash_profile
+echo 'PATH=.:$HOME/git/ec2docker:$PATH' >> /home/ec2-user/.bash_profile
+chmod +x /home/ec2-user/.bash_profile
+#
+chown -R ec2-user /home/ec2-user
+#
+ls -l `find ~`
+docker ps
