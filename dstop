@@ -1,0 +1,4 @@
+#!/bin/bash
+# stop and remove a docker container by name
+docker stop $1
+docker rm $1

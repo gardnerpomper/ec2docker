@@ -1,0 +1,29 @@
+#!/bin/bash
+read -d '' pyScript << 'EOF'
+import sys
+from collections import Counter
+fw=Counter()
+#
+# ----- column headings
+#
+lines = [ ('Name', 'Status', 'Image', 'Ports')]
+#
+# ----- split the lines into fields and find the max width of each
+#
+for line in sys.stdin:
+    flds = line.strip().split('|')
+    lines.append(flds)
+    for fn,fval in enumerate(flds):
+        if len(fval) > fw[fn]: fw[fn] = len(fval)
+nflds=len(fw.keys())
+#
+# ----- print each line in columns as wide as required
+#
+for line in lines:
+    flds=[]
+    for fn in range(nflds):
+        flds.append( "%-*s" % (fw[fn], line[fn] if fn < len(line) else '') )
+    print "%s" % "  ".join(flds)
+EOF
+docker ps --format="{{.Names}}|{{.Status}}|{{.Image}}|{{.Ports}}" | python2 -c "$pyScript"
+

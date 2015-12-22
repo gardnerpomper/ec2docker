@@ -1,0 +1,6 @@
+#!/bin/bash
+dangling=$(docker images -q -f dangling=true)
+if [ "$dangling" != "" ]; then
+    docker rmi $dangling
+fi
+
