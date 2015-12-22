@@ -1,29 +1,53 @@
 #!/bin/bash
+# customized "docker ps" command
+# this script displays the Name, Status, Owner, Image and Ports
+# for the running containers (or all if the "-a" flag is used)
+# The "Owner" is pulled from the docker label "runby"
+# The main purpose of this script is to make sure that the output
+# is printed in neat columns
+#
+# Example:
+# > dps
+# Name          Status         Run_By   Image                    Ports                           
+# sharp_ride    Up 12 minutes  gardner  kivy                     32787->5900/tcp, 32786->6080/tcp
+# drunk_bartik  Up 3 days               gardnerpomper/emacs-vnc  32773->3389/tcp, 32772->5901/tcp
+#
 read -d '' pyScript << 'EOF'
 import sys
 from collections import Counter
 fw=Counter()
 #
-# ----- column headings
+# ----- initialize the field widths from the column headings
 #
-lines = [ ('Name', 'Status', 'Image', 'Ports')]
+lines = [ ('Name', 'Status', 'Run_By', 'Image', 'Ports')]
+for fn,fval in enumerate(lines[0]):
+    fw[fn] = len(fval)
 #
 # ----- split the lines into fields and find the max width of each
+# ----- munge the field values at this point (such as removing
+# ----- the "0.0.0.0:" from the port mappings
 #
 for line in sys.stdin:
     flds = line.strip().split('|')
-    lines.append(flds)
+    fvals = []
     for fn,fval in enumerate(flds):
+        fval = fval.replace('0.0.0.0:','')
         if len(fval) > fw[fn]: fw[fn] = len(fval)
-nflds=len(fw.keys())
+        fvals.append(fval)
+    lines.append(fvals)
 #
 # ----- print each line in columns as wide as required
 #
+nflds=len(fw.keys())
 for line in lines:
     flds=[]
     for fn in range(nflds):
         flds.append( "%-*s" % (fw[fn], line[fn] if fn < len(line) else '') )
     print "%s" % "  ".join(flds)
 EOF
-docker ps --format="{{.Names}}|{{.Status}}|{{.Image}}|{{.Ports}}" | python2 -c "$pyScript"
-
+#
+# ---- NOTE: The fields specified in the format option must match the
+# ---- column headings at the start of the python script. The names
+# ---- don't need to be identical, but the order and meaning do
+#
+docker ps --format='{{.Names}}|{{.Status}}|{{.Label "runby"}}|{{.Image}}|{{.Ports}}' $* | python2 -c "$pyScript"
