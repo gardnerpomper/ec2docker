@@ -10,5 +10,5 @@
 #   ec2tunnel 5903:322773 &
 #
 tunnel=$(echo $1 | awk -F: '{printf("-L %s/localhost/%s",$1,$2)}')
-ssh -i ~/.ssh/gcpEC2.pem ${EC2_USER}@${ELASTIC_IP} $tunnel -N
+ssh ${EC2_USER}@${ELASTIC_IP} $tunnel -N
 

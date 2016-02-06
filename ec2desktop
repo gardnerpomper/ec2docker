@@ -12,10 +12,9 @@ echo "step1: clearing out known_hosts"
 sed -i '' "/${ELASTIC_IP}/d" ~/.ssh/known_hosts
 #
 echo "step2: configuring the EC2 instance for vnc and docker"
-scp -i ~/.ssh/gcpEC2.pem ec2_xstartup ubuntu@$ELASTIC_IP:ec2_xstartup
-ssh -i ~/.ssh/gcpEC2.pem ubuntu@$ELASTIC_IP 'bash -s' < ec2_desktop_setup.sh 
+scp ec2_xstartup ubuntu@$ELASTIC_IP:ec2_xstartup
+ssh ubuntu@$ELASTIC_IP 'bash -s' < ec2_desktop_setup.sh 
 #
 echo "step3: creating the tunnel for port 5901 (this will hang,"
 echo "       so just kill it when you are done with the instance)"
-#ec2tunnel 5901:5901
-ssh ${EC2_USER}@${ELASTIC_IP} -L 5901/localhost/5901
+ssh ubuntu@${ELASTIC_IP} -L 5901/localhost/5901

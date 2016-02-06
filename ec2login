@@ -1,7 +1,7 @@
 #!/bin/bash
 # ssh into an Amazon EC2 instance that is mapped to my Elastic IP address
 # Usage:
-#    ec2
+#    ec2login
 #
 # This can also be used to set up a tunnel by appending the tunnel
 # info at the command line. For example, to tunnel my local 5903 to
@@ -10,5 +10,4 @@
 #    ec2login -L 5903/localhost/32772 -N &
 #
 sed -i '' "/${ELASTIC_IP}/d" ~/.ssh/known_hosts
-#ssh -i ~/.ssh/gcpEC2.pem ${EC2_USER}@$ELASTIC_IP
 ssh ${EC2_USER}@$ELASTIC_IP $*
