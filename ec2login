@@ -7,12 +7,8 @@
 # info at the command line. For example, to tunnel my local 5903 to
 # remote 32772 (NOTE: -N will hang, so best to put it in the
 # background):
-#    ec2 -L 5903/localhost/32772 -N &
-#
-: ${ELASTIC_IP:=52.7.116.164}
+#    ec2login -L 5903/localhost/32772 -N &
 #
 sed -i '' "/${ELASTIC_IP}/d" ~/.ssh/known_hosts
-scp dinit ec2-user@$ELASTIC_IP:dinit
-ssh ec2-user@$ELASTIC_IP -t sudo /home/ec2-user/dinit
-# ssh -i ~/.ssh/gcpEC2.pem ec2-user@$ELASTIC_IP
-
+#ssh -i ~/.ssh/gcpEC2.pem ${EC2_USER}@$ELASTIC_IP
+ssh ${EC2_USER}@$ELASTIC_IP $*
